@@ -9,7 +9,7 @@
 <% if(post.blogText.length>100){ %>
 <p>
   <%= post.blogText.substring(0,100)+"... " %>
-  <a href="/posts/<%=post.blogTitle%>">Read more</a>
+  <a href="/posts/<%=post._id%>">Read more</a>
 </p>
 <% } else{ %>
 <p><%= post.blogText %></p>

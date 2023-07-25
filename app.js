@@ -90,17 +90,17 @@ app.post("/compose", function(req,res)
 })
 
 //using express routing parameters
-app.get("/posts/:postName", function(req,res)
+app.get("/posts/:postID", function(req,res)
 {
-  const requestedPostName=_.lowerCase(req.params.postName);
+  const requestedPostId=req.params.postID;
 
-  posts.forEach(function(post){
-    const postTitle=_.lowerCase(post.titleText);
-    if(requestedPostName===postTitle)
-    {
-      res.render("post", {titleText:post.titleText, postText:post.postText} );
-    }
-  });
+  Blog.findOne({_id:requestedPostId})
+  .then((blog)=>res.render("post", {titleText:blog.blogTitle, postText:blog.blogText}))
+  .catch((err)=>console.log(err));
+
+
+
+  
  
 });
 
