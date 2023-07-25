@@ -31,10 +31,6 @@ const blogSchema={
 //Blog model
 const Blog= mongoose.model("Blog", blogSchema);
 
-
-//since we need to store the value of two items simultaneously we create an array of objects and not variables.
-// let posts=[];
-
 app.get("/", function (req, res) {
 
   Blog.find({}).then((posts)=>{
@@ -79,14 +75,6 @@ app.post("/compose", function(req,res)
     
   }
  
-
-  // const composed={
-  //   titleText:req.body.composedTitle,
-  //   postText:req.body.composedPost
-  // }
-  // posts.push(composed);
-  // res.redirect("/")
-
 })
 
 //using express routing parameters
@@ -98,9 +86,6 @@ app.get("/posts/:postID", function(req,res)
   .then((blog)=>res.render("post", {titleText:blog.blogTitle, postText:blog.blogText}))
   .catch((err)=>console.log(err));
 
-
-
-  
  
 });
 
