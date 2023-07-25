@@ -33,13 +33,20 @@ const Blog= mongoose.model("Blog", blogSchema);
 
 
 //since we need to store the value of two items simultaneously we create an array of objects and not variables.
-let posts=[];
+// let posts=[];
 
 app.get("/", function (req, res) {
-  res.render("home", {
-    homeContent: homeStartingContent,
-    posts:posts,
+
+  Blog.find({}).then((posts)=>{
+    res.render("home", {
+      homeContent: homeStartingContent,
+      posts:posts,
   });
+    
+  
+  })
+  .catch((err)=>{console.log(err);});
+  
     
 });
 
@@ -63,8 +70,15 @@ app.post("/compose", function(req,res)
     blogText:req.body.composedPost
   });
 
-  newBlog.save();
-  res.redirect("/");
+  if((newBlog.blogTitle==="" || newBlog.blogText==="") || (newBlog.blogTitle==="" && newBlog.blogText==="")){
+    res.redirect("/")
+  }
+  else{
+    newBlog.save().then(()=>{console.log("Successfully saved to DB!"); res.redirect("/");})
+    .catch((err)=>console.log(err));
+    
+  }
+ 
 
   // const composed={
   //   titleText:req.body.composedTitle,

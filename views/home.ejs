@@ -5,14 +5,14 @@
 
 <!-- using forEach() method -->
 <% posts.forEach(function(post) { %>
-<h1><%= post.titleText %></h1>
-<% if(post.postText.length>100){ %>
+<h1><%= post.blogTitle %></h1>
+<% if(post.blogText.length>100){ %>
 <p>
-  <%= post.postText.substring(0,100)+"... " %>
-  <a href="/posts/<%=post.titleText%>">Read more</a>
+  <%= post.blogText.substring(0,100)+"... " %>
+  <a href="/posts/<%=post.blogTitle%>">Read more</a>
 </p>
 <% } else{ %>
-<p><%= post.postText %></p>
+<p><%= post.blogText %></p>
 <%} }); %>
 
 <%- include ("./partials/footer.ejs" ) -%>
