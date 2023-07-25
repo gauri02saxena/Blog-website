@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require('lodash');
+const mongoose=require("mongoose");
 
 const homeStartingContent =
   "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -12,16 +13,30 @@ const contactContent =
 
 const app = express();
 
-//since we need to store the value of two items simultaneously we create an array of objects and not variables.
-let posts=[];
+
 
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+mongoose.connect("mongodb://127.0.0.1/blogWebsite", {useNewUrlParser:true});
+
+//Blog schema
+const blogSchema={
+  blogTitle: String,
+  blogText: String
+};
+
+//Blog model
+const Blog= mongoose.model("Blog", blogSchema);
+
+
+//since we need to store the value of two items simultaneously we create an array of objects and not variables.
+let posts=[];
+
 app.get("/", function (req, res) {
-  res.render("home.ejs", {
+  res.render("home", {
     homeContent: homeStartingContent,
     posts:posts,
   });
@@ -29,16 +44,36 @@ app.get("/", function (req, res) {
 });
 
 app.get("/about", function (req, res) {
-  res.render("about.ejs", { about: aboutContent });
+  res.render("about", { about: aboutContent });
 });
 
 app.get("/contact", function (req, res) {
-  res.render("contact.ejs", { contact: contactContent });
+  res.render("contact", { contact: contactContent });
 });
 
 app.get("/compose", function (req, res) {
-  res.render("compose.ejs");
+  res.render("compose");
 });
+
+app.post("/compose", function(req,res)
+{
+  
+  const newBlog= new Blog({
+    blogTitle:req.body.composedTitle,
+    blogText:req.body.composedPost
+  });
+
+  newBlog.save();
+  res.redirect("/");
+
+  // const composed={
+  //   titleText:req.body.composedTitle,
+  //   postText:req.body.composedPost
+  // }
+  // posts.push(composed);
+  // res.redirect("/")
+
+})
 
 //using express routing parameters
 app.get("/posts/:postName", function(req,res)
@@ -56,19 +91,7 @@ app.get("/posts/:postName", function(req,res)
 });
 
 
-app.post("/compose", function(req,res)
-{
-  
 
-  const composed={
-    titleText:req.body.composedTitle,
-    postText:req.body.composedPost
-  }
-
-  posts.push(composed);
-  res.redirect("/")
-
-})
 
 app.listen(3000, function () {
   console.log("Server started on port 3000");
